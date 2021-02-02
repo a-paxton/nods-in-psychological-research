@@ -91,3 +91,33 @@ ethicality and legality, including the *hiQ Labs v. LinkedIn* ruling in the US.)
 
 ***
 
+# Submitting a request
+
+For this exercise, we'll be accessing the [NYC Open Data
+repository](https://opendata.cityofnewyork.us/). This rich dataset includes open
+data from a variety of government sources from New York, NY (USA). If you take
+time to poke around the website, you'll see a large number of datasets
+available. Let's choose the [2015 Street Tree Census
+data](https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35).
+
+## Identify API URL
+
+To get started, we need to figure out more about this API. A good place to start
+is to take a look at the website. Once you get to the platform, you should see
+(as of February 2021) an interactive map of the tree census with a few boxes of
+words above the upper-right corner of the map. If you click "Export," a new
+sidebar will appear, and you'll get access to a number of options (yes,
+including the option to just download a CSV of the data). One option will be the
+"SODA API" (or *Socrata Open Data API (SODA)*), which we'll use for this exercise. 
+
+Once you click on the SODA API link, you'll see new information pop up,
+including lots of helpful links to additional documentation about the SODA API
+and a list of fields in this dataset. After looking at the API information, we 
+know the URL of our dataset. Let's create a variable to hold onto that.
+
+```{r specify-api-url}
+
+# specify the API location
+tree_data_location = "https://data.cityofnewyork.us/resource/5rq2-4hqu.json"
+
+```
