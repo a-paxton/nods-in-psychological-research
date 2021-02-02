@@ -60,8 +60,7 @@ load_or_install_packages <- function(pkg){
 ```{r load-packages, message=FALSE, results="hide"}
 
 # specify which packages we'll need
-required_packages = c("tidyverse",
-                      "httr",
+required_packages = c("httr",
                       "jsonlite")
 
 # install them (if necessary) and load them
