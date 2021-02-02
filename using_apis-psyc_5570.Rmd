@@ -69,3 +69,25 @@ load_or_install_packages(required_packages)
 
 ```
 
+***
+
+# Finding APIs
+
+Not every website, repository, or organization has an API available for users to
+access data, but those that do have them tend to make them easily available. You
+might start by checking the website for an API information link. This might be
+at the bottom of the webpage or available in a "Developers" menu of the website.
+If you can't find one, try using the "find" function in your browser for `API`,
+or try searching `API` in the website's search function (if they have one).
+
+If you still can't find it, try doing a general search on your favorite search
+engine with the name of the website and API. (As you may already know, putting
+both terms in separate double-quotes will ensure you only get webpage results
+that include both terms.)
+
+If you still can't find anything, it may be time to turn to web scraping---but,
+again, we won't be covering that here. (Again, keep in mind matters of
+ethicality and legality, including the *hiQ Labs v. LinkedIn* ruling in the US.)
+
+***
+
