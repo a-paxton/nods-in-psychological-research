@@ -137,7 +137,7 @@ the usual admonitions to know your data!
 After poking around, let's say that we want to find all trees in the Bronx. In
 looking at the metadata list and some of the options in the visualized dataset,
 we've found the variable name (`zip_city`) and value (`Bronx`) for it. We need
-to prepare the variable in a `list` item, which `httr::GET` expects.
+to prepare the variable in a `list` item, which `httr::GET()` expects.
 
 When we input the values, we need to respect the data type in R and in the API.
 Given that `Bronx` is a string, we'll need to remember to encapsulate it in
