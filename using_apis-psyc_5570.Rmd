@@ -164,7 +164,18 @@ request = GET(url = tree_data_location,
 # show us what we received
 request
 ```
-Great! It looks like our submission worked.
+Great! It looks like our submission worked. It's useful to check for errors by
+ensuring that the `Status` value of the response is `200`. You can do this by
+manually inspecting the output (as seen above) or by calling it from the 
+returned value, as shown below:
+
+```{r show-request-error}
+
+# programmatically grab the response value
+request$status_code
+
+```
+
 
 ***
 
