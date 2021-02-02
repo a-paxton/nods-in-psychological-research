@@ -167,3 +167,67 @@ request
 Great! It looks like our submission worked.
 
 ***
+
+# Debugging
+
+Before we move onto parsing the data, let's take a moment to consider some possible
+issues with our requests.
+
+## Problems with variable names
+
+Let's say that we had a typo in our request, using `zipcity` instead of
+`zip_city` for a variable name.
+
+```{r debugging-request-typo-in-variable-name}
+
+# let's say that we forgot the underscore in the variable
+return_variables_with_name_typo = list(zipcity = "Bronx")
+
+# we'll create and submit our faulty request
+request_with_name_typo = GET(url = tree_data_location,
+                             query = return_variables_with_name_typo)
+
+# show us what we received
+request_with_name_typo
+
+```
+
+As you can see, it is possible for us to correctly submit something from the R
+side that the API won't accept. In this case, `httr::GET()` received everything
+in the correct format and therefore submitted our request to the API. However,
+the API sent back an error to let us know that there was an unrecognized
+variable name. If you receive this kind of error, be sure to go back to the list
+of variables and check for typos.
+
+## Problems with variable values
+
+It's important to contrast the typo in a variable name with a typo in the
+variable *value*. In this example, let's say that we correctly specify the
+variable name (`zip_city`) but that we have a typo in our desired value (`Brox`
+instead of `Bronx`).
+
+```{r debugging-request-typo-in-variable-values}
+
+# let's say that we forgot the underscore in the variable
+return_variables_with_value_typo = list(zip_city = "Brox")
+
+# we'll create and submit our faulty request
+request_with_value_typo = GET(url = tree_data_location,
+                             query = return_variables_with_value_typo)
+
+# show us what we received
+request_with_value_typo
+
+```
+
+Again, `httr::GET()` had no problems submitting this request. However, we don't
+get the nice error message from the API this time. Instead, because we submitted
+something with existing variable names, it simply winnowed down the list and
+returned every record with a value of `Brox` in the `zip_city` variable---that
+is to say, zero records. This is a more obvious problem if the typo resulted in
+a nonexistent value in the variable (because it will return zero records), but
+it could pose a more serious problem if the typo results in a valid value
+*other* than the one you intended. This highlights the importance of checking
+our output for expected values *and* checking your code for accuracy.
+
+*** 
