@@ -1,0 +1,36 @@
+---
+title: 'PSYC 5570: Introduction to APIs'
+author: "A. Paxton"
+output:
+  html_document:
+    keep_md: yes
+    number_sections: yes
+---
+
+```{r function-check-for-packages, include=FALSE}
+
+# make sure we can load packages 
+# (thanks to https://gist.github.com/smithdanielle/9913897)
+load_or_install_packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, 
+                     dependencies = TRUE,
+                     repos="http://cloud.r-project.org/")
+  sapply(pkg, require, character.only = TRUE)
+}
+
+```
+
+```{r preliminaries}
+
+# specify which packages we'll need
+required_packages = c("tidyverse",
+                      "httr",
+                      "jsonlite")
+
+# install them (if necessary) and load them
+load_or_install_packages(required_packages)
+
+```
+
