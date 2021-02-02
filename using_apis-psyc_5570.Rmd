@@ -1,11 +1,33 @@
 ---
-title: 'PSYC 5570: Introduction to APIs'
+title: 'Introduction to APIs'
 author: "A. Paxton"
 output:
   html_document:
     keep_md: yes
     number_sections: yes
 ---
+
+An API---or *application programming interface*---is a formal avenue created 
+by an organization or website to programmatically access their data. We could
+most directly contrast an API with *web scraping*, which we will cover in a 
+future session.
+
+To use an API, you must submit a *request* to the system. That request
+includes a set of information that has been specified by the API developers.
+Minimally, the request will describe the kind of data that you want to access
+(in the manner outlined by the API). For some systems, this must also include an
+*API key*, which is an authenticated permission identifier that allows you to
+access data. 
+
+After submitting your request, you will receive a *response* that contains the
+data you've requested. Your next job will be to parse the response into usable
+data.
+
+In this exercise, we'll walk through the process of using an API directly from R.
+
+***
+
+# Preliminaries
 
 ```{r function-check-for-packages, include=FALSE}
 
