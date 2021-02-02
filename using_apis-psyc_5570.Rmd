@@ -150,3 +150,20 @@ return_variables = list(zip_city = "Bronx")
 
 ```
 
+## Create and submit the request
+
+Finally, let's put together the pieces we've already created and submit the
+request to the API.
+
+```{r create-and-submit-request}
+
+# create and submit the request
+request = GET(url = tree_data_location,
+              query = return_variables)
+
+# show us what we received
+request
+```
+Great! It looks like our submission worked.
+
+***
