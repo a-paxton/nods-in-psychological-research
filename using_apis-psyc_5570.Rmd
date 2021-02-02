@@ -29,6 +29,19 @@ In this exercise, we'll walk through the process of using an API directly from R
 
 # Preliminaries
 
+First, we'll need to prepare for our exercises. We'll do this by loading the
+packages we need, including---if needed---installing those packages. For the
+sake of the exercise, we'll load the packages silently, meaning that we won't
+clutter our R markdown output with a bunch of warnings and output messages
+from the loading and installation process.
+
+```{r clear-workspace}
+
+# clear the workspace (useful if we're not knitting)
+rm(list=ls())
+
+```
+
 ```{r function-check-for-packages, include=FALSE}
 
 # make sure we can load packages 
@@ -44,7 +57,7 @@ load_or_install_packages <- function(pkg){
 
 ```
 
-```{r preliminaries, message=FALSE, results="hide"}
+```{r load-packages, message=FALSE, results="hide"}
 
 # specify which packages we'll need
 required_packages = c("tidyverse",
