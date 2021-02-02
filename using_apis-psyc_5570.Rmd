@@ -100,6 +100,8 @@ time to poke around the website, you'll see a large number of datasets
 available. Let's choose the [2015 Street Tree Census
 data](https://data.cityofnewyork.us/Environment/2015-Street-Tree-Census-Tree-Data/pi5s-9p35).
 
+For this, we'll be using the `httr` library's `GET` function.
+
 ## Identify API URL
 
 To get started, we need to figure out more about this API. A good place to start
@@ -121,3 +123,30 @@ know the URL of our dataset. Let's create a variable to hold onto that.
 tree_data_location = "https://data.cityofnewyork.us/resource/5rq2-4hqu.json"
 
 ```
+
+## Identify filtering parameters for request
+
+Next, we decide what subset of the data we'd like to receive.
+Unfortunately, the metadata isn't terribly detailed, so let's click on a few
+trees on the map to find out what some examples might be. 
+
+This might feel clunky or inelegant, but keep in mind that a lot of working with
+naturally occurring data requires persistence and creativity---along with all of
+the usual admonitions to know your data!
+
+After poking around, let's say that we want to find all trees in the Bronx. In
+looking at the metadata list and some of the options in the visualized dataset,
+we've found the variable name (`zip_city`) and value (`Bronx`) for it. We need
+to prepare the variable in a `list` item, which `httr::GET` expects.
+
+When we input the values, we need to respect the data type in R and in the API.
+Given that `Bronx` is a string, we'll need to remember to encapsulate it in
+double-quotes so that R doesn't get angry with us.
+
+```{r specify-api-filtering-parameters}
+
+# specify what we want to filter by
+return_variables = list(zip_city = "Bronx")
+
+```
+
