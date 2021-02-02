@@ -242,3 +242,23 @@ it could pose a more serious problem if the typo results in a valid value
 our output for expected values *and* checking your code for accuracy.
 
 *** 
+
+# Parsing output
+
+Now that we have our intended response (saved in the `request` variable), we'll
+need to convert it into something usable. (To avoid cluttering the output, we'll
+skip displaying the intermediary steps here, but if you'd like to see the mess
+that is the text-only response, feel free to inspect the `response` variable.)
+
+```{r convert-response-to-df}
+
+# convert the response's values to text and then to a dataframe
+response = content(request, as = "text")
+response_df = data.frame(fromJSON(response, flatten=TRUE))
+
+# let's take a peek at what we got
+head(response_df)
+
+```
+Fantastic! Our dataframe looks well-formed and ready to go.
+
