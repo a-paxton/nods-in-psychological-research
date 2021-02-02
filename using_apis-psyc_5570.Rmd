@@ -261,3 +261,13 @@ head(response_df)
 ```
 Fantastic! Our dataframe looks well-formed and ready to go.
 
+***
+
+# Next steps
+
+Of course, just because we have a dataframe, doesn't mean we can jump right into 
+analyses. You'll want to be sure to go through all of the steps of cleaning and
+preparing your dataset (e.g., converting variables from `chr`, looking for missing
+values, transforming your data), which we'll go through in later sessions.
+
+***
