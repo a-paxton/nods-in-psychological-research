@@ -175,6 +175,17 @@ request$status_code
 
 ```
 
+## A quick note about API keys or tokens
+
+As mentioned in the beginning of this exercise, some APIs may gate access to
+their data by issuing API keys or tokens that must be included in a request. In
+some cases, the keys may be required to access the API at all; in other cases,
+they may only be required if a user is requesting data above a specific rate or
+above a specific volume. The idea behind the token is that it identifies the
+requester to the organization. Any API that requires a key should have detailed
+information about how to request one and any restrictions for use; be sure to
+consult the documentation for specific information from each organization, since
+these policies vary widely.
 
 ***
 
