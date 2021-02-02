@@ -1,6 +1,6 @@
 ---
 title: 'Introduction to APIs'
-author: "A. Paxton"
+author: "A. Paxton (*University of Connecticut*)"
 output:
   html_document:
     keep_md: yes
