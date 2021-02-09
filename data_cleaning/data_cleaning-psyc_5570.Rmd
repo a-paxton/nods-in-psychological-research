@@ -83,18 +83,19 @@ load_or_install_packages(required_packages)
 ## Load the data
 
 Next, we'll load our data. For this first tutorial, we'll use a toy dataset
-that's already included in R: `USArrests`. It includes arrest statistics for
-U.S. states from 1973. This is a relatively simple naturally occurring dataset,
-but it's fairly easy to work with because it's already in R.
+that's already included in `dplyr`: `starwars`. It includes information about
+various Star Wars characters. This is a relatively simple naturally occurring
+dataset culled from the [SWAPI](https://swapi.dev/), and it's fairly easy to
+work with because it's already in R.
 
 ```{r load-data}
 
 # read in the dataset
-arrest_df = USArrests
+starwars_df = starwars
 
 ```
 
-We gave our variable an informative name---here, `arrest_df`. A common
+We gave our variable an informative name---here, `starwars_df`. A common
 convention is to use `df` as an abbreviation for "dataframe," or a collection of
 variables. It's good to get in the habit of giving your variables and dataframes
 more informative names than a single letter (e.g., `x`, `a`) or generic names
@@ -114,7 +115,7 @@ like to specify manually).
 ```{r head-function}
 
 # inspect the first 5 records
-head(arrest_df)
+head(starwars_df)
 
 ```
 
@@ -125,7 +126,7 @@ note that nothing will pop up when we knit such a command.
 ```{r view-function}
 
 # programmatically call the data viewer
-View(arrest_df)
+View(starwars_df)
 
 ```
 
@@ -138,7 +139,7 @@ understand all of our variables at a glance.
 ```{r create-summary}
 
 # print summary statistics for all of our variables at once
-summary(arrest_df)
+summary(starwars_df)
 
 ```
 
@@ -149,11 +150,12 @@ function---like, for example, a mean or standard deviation.
 
 ```{r tidy-summary}
 
-arrest_df %>%
-  summarize(murder_min = min(Murder),
-            murder_mean = mean(Murder),
-            murder_max = max(Murder),
-            murder_sd = sd(Murder))
+# get summary stats for a single variable, removing NAs as needed
+starwars_df %>%
+  summarize(height_min = min(height, na.rm=TRUE),
+            height_mean = mean(height, na.rm=TRUE),
+            height_max = max(height, na.rm=TRUE),
+            height_sd = sd(height, na.rm=TRUE))
 
 ```
 
@@ -169,7 +171,7 @@ community.
 
 The pipe allows you to pass the results of one function to another function
 in the same chunk of code. It's like an assembly line, passing the dataframe
-that you call in the first line (above, `arrest_df %>%`) to the next line
+that you call in the first line (above, `starwars_df %>%`) to the next line
 (above, `summarize(...)`). You can continue passing the results to additional
 functions by continuing to pipe.
 
@@ -183,11 +185,19 @@ your code be a bit more readable (rather than really long lines of code) but
 also helps you see more easily the changes that have happened from version to
 version in git.
 
-Getting back to the task at hand: I personally find that base R's `summary()` is
-more efficient for very quick introductions to my data. For the
-`tidyverse::summarize()` function, we need to specify each variable and the
-specific summarization function we want to run. This provides flexibility (e.g.,
-our addition of the standard deviation), but you may not always need it. I chose
-this example to show the utility of combining the Tidyverse with other
-functions: As with any toolbox, you might look elsewhere for the perfect tool
-for a job.
+### Comparing Tidyverse and base R options
+
+I personally find that base R's `summary()` is more efficient for very quick
+introductions to my data. For the `tidyverse::summarize()` function, we need to
+specify each variable and the specific summarization function we want to run.
+This provides flexibility (e.g., our addition of the standard deviation), but
+you may not always need it.
+
+However, you may also note the massive headache that we got when we subjected a
+character variable to `summary()`, which we *didn't* get when we could be more
+targeted in our variable selection.
+
+Together, this example shows the utility of combining the Tidyverse with other
+functions: As with any toolbox, you want to find the perfect tool for a specific
+job---not just treat everything as a `tidy` hammer or a base screwdriver.
+
