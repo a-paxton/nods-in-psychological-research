@@ -91,7 +91,7 @@ work with because it's already in R.
 ```{r load-data}
 
 # read in the dataset
-starwars_df = starwars
+starwars_df = as.data.frame(starwars)
 
 ```
 
@@ -105,6 +105,9 @@ more informative names than a single letter (e.g., `x`, `a`) or generic names
 understandable variable names, too, rather than cursing Past You for making
 Future You go through all of the code to figure out what `this_variable` is
 doing and why.)
+
+In our example, let's say that we want to examine whether pilots appear in more
+*Star Wars* movies that non-pilots.
 
 ## Visual inspection
 
