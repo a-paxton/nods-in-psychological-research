@@ -143,14 +143,17 @@ summary(arrest_df)
 ```
 
 While `summary()` is a great quick function for this, let's take a look at some
-`tidy` alternatives and begin our introduction to the Tidyverse.
+`tidy` alternatives and begin our introduction to the Tidyverse. We can use the
+`tidyverse::summarize()` function to compute a single value from a given
+function---like, for example, a mean or standard deviation.
 
 ```{r tidy-summary}
 
 arrest_df %>%
-  summarize(min_murder = min(Murder),
-            mean_murder = mean(Murder),
-            max_murder = max(Murder))
+  summarize(murder_min = min(Murder),
+            murder_mean = mean(Murder),
+            murder_max = max(Murder),
+            murder_sd = sd(Murder))
 
 ```
 
