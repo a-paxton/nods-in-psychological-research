@@ -1,0 +1,77 @@
+---
+title: "Introduction to Data Cleaning with the `tidyverse`"
+author: "A. Paxton (*University of Connecticut*)"
+output:
+  html_document:
+    keep_md: yes
+---
+
+Data cleaning is a critical first step for working with many naturally occurring
+datasets. Data cleaning (also known in as *data munging*) is an opportunity for
+you to explore your data, identify systematic issues with specific variables,
+address missing data, and generally ensure that your data are ready for analysis.
+
+You may already be in the habit of inspecting your data with experimentally
+derived datasets, as it's *always* a good habit to check out your data (no
+matter their source) before working with them. However, it's a bit more
+important (and, potentially, a bit trickier) when dealing with NODS, as you may
+not entirely know what to expect in the NODS as you first begin using them
+(e.g., reliability of the data logging or data collection, nature of the data
+collection equipment).
+
+In this tutorial, we will be using the `tidyverse` library in R to walk through
+some data cleaning steps. Remember that every dataset is different, and the
+steps that we will be presenting here are by no means comprehensive for every
+project. It's also useful to note that there are many ways to clean your data,
+including many functions in base R, but the Tidyverse is a suite of libraries
+that is rapidly gaining popularity in the behavioral and cognitive sciences.
+
+This tutorial is an expansion and refocusing of an earlier tutorial of mine
+about [clustering in R](https://github.com/a-paxton/clustering-tutorial).
+
+***
+
+# Preliminaries
+
+First, let's get ready for our analyses. We do this by clearing our workspace
+and loading in the libraries we'll need. It's good to get in the habit of 
+clearing your workspace from the start so that you don't accidentally have
+clashes with unneeded variables or dataframes that could affect your results.
+
+As with our other tutorials, we'll use a function here to check for all required
+packages and---if necessary---install them before loading them. Implementing
+this (or a similar) function is a helpful first step, especially if you plan on
+sharing your code with other people.
+
+```{r clear-workspace}
+
+# clear the workspace (useful if we're not knitting)
+rm(list=ls())
+
+```
+
+```{r function-check-for-packages, include=FALSE}
+
+# make sure we can load packages 
+# (thanks to https://gist.github.com/smithdanielle/9913897)
+load_or_install_packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, 
+                     dependencies = TRUE,
+                     repos="http://cloud.r-project.org/")
+  sapply(pkg, require, character.only = TRUE)
+}
+```
+
+```{r load-packages, message=FALSE, results="hide"}
+
+# specify which packages we'll need
+required_packages = c("tidyverse")
+
+# install them (if necessary) and load them
+load_or_install_packages(required_packages)
+
+```
+
+***
