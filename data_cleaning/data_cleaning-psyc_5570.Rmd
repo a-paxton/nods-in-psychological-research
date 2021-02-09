@@ -141,3 +141,40 @@ understand all of our variables at a glance.
 summary(arrest_df)
 
 ```
+
+While `summary()` is a great quick function for this, let's take a look at some
+`tidy` alternatives and begin our introduction to the Tidyverse.
+
+```{r tidy-summary}
+
+arrest_df %>%
+  summarize(min_murder = min(Murder),
+            mean_murder = mean(Murder),
+            max_murder = max(Murder))
+
+```
+
+Note that we're here using this symbol: `%>%`. This is called a "pipe" in the
+Tidyverse. The Tidyverse is controversial: To some, it's a way of streamlining
+sometimes complex code to make it more human-readable; to others, it's a
+headache-inducing abomination. I admit that I fall into the former camp, but I
+recognize that many folks---especially those who are more fond of Python than
+R---hold the opposing opinion. However, even if you don't personally prefer this
+style, it's useful for you to know how to read and interact with the Tidyverse,
+since it's relatively common within the cognitive science and psychology
+community.
+
+The pipe allows you to pass the results of one function to another function
+in the same chunk of code. It's like an assembly line, passing the dataframe
+that you call in the first line (above, `arrest_df %>%`) to the next line
+(above, `summarize(...)`). You can continue passing the results to additional
+functions by continuing to pipe.
+
+You might wonder why we're putting each function on a new line. Another good
+habit for programmers---especially for programmers who use git as part of
+their code-sharing or version control---is to keep your lines to 80 characters
+or less. If you take a look at the `.Rmd` of this tutorial, you'll see that
+I'm breaking the lines of text to be about 80 characters, too. This not only
+helps your code be a bit more readable (rather than really long lines of code)
+but also helps you see more easily the changes that have happened from version
+to version in git.
