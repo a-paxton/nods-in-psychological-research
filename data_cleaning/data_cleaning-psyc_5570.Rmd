@@ -173,11 +173,21 @@ that you call in the first line (above, `arrest_df %>%`) to the next line
 (above, `summarize(...)`). You can continue passing the results to additional
 functions by continuing to pipe.
 
-You might wonder why we're putting each function on a new line. Another good
-habit for programmers---especially for programmers who use git as part of
+You might wonder why we're putting each function on a new line. You don't need
+to do that: You could simply pipe to another command on the same line. However,
+a good habit for programmers---especially for programmers who use git as part of
 their code-sharing or version control---is to keep your lines to 80 characters
-or less. If you take a look at the `.Rmd` of this tutorial, you'll see that
-I'm breaking the lines of text to be about 80 characters, too. This not only
-helps your code be a bit more readable (rather than really long lines of code)
-but also helps you see more easily the changes that have happened from version
-to version in git.
+or less. If you take a look at the `.Rmd` of this tutorial, you'll see that I'm
+breaking the lines of text to be about 80 characters, too. This not only helps
+your code be a bit more readable (rather than really long lines of code) but
+also helps you see more easily the changes that have happened from version to
+version in git.
+
+Getting back to the task at hand: I personally find that base R's `summary()` is
+more efficient for very quick introductions to my data. For the
+`tidyverse::summarize()` function, we need to specify each variable and the
+specific summarization function we want to run. This provides flexibility (e.g.,
+our addition of the standard deviation), but you may not always need it. I chose
+this example to show the utility of combining the Tidyverse with other
+functions: As with any toolbox, you might look elsewhere for the perfect tool
+for a job.
