@@ -284,5 +284,69 @@ print(paste0("Missing records: ",dim(missing_starwars_df)[1]))
 
 ```
 
+## Derive movie counts
+
+Here, we'll need to figure out how to identify the number of movies from the
+embedded list in the `films` variable. Find a way of extracting this as an
+integer to be included as a new variable, `film_count`.
+
+```{r transform-movie-counts}
+
+full_starwars_df = full_starwars_df %>%
+  mutate(film_count = ...)
+
+```
+
 ***
 
+# Data manipulation
+
+Now that we're pretty confident about the variables we want, we can create a
+clean dataframe with those to minimize the amount of hassle we have when trying
+to quickly inspect them.
+
+```{r select-variables}
+
+# use select() to identify only the variables we want to include
+clean_starwars_df = full_starwars_df %>%
+  select(name, height, mass, birth_year, gender, films, pilot)
+
+```
+
+With this cleaner dataframe, let's go ahead and transform our data to the
+correct variable type.
+
+```{r transform-variables}
+
+# let's properly hold integers and factors
+clean_starwars_df = clean_starwars_df%>%
+  mutate_at(vars(gender, pilot), as.factor) %>%
+  mutate_at(vars(height, mass), as.integer)
+
+```
+
+The `mutate_at` syntax is just one example of a way that we can complete
+more complex functions over dataframes using the Tidyverse. In this case,
+we are asking to convert each variable that is a numeric-type variable.
+
+***
+
+# Data visualization
+
+Always, always, always plot your data. Here, come up with 1-2 visualizations of
+the data, focusing on the most relevant variables to our analyses
+
+```{r plot, fig.height=5, fig.width=3}
+
+plot(...)
+
+```
+
+***
+
+# Exercise
+
+Now, try your hand at using the Star Wars API to download the planets or
+vehicles dataframe and join them together with the characters dataset that we've
+been using. Try joining them together and structuring a dataset that could
+answer a new question.
