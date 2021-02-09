@@ -75,3 +75,33 @@ load_or_install_packages(required_packages)
 ```
 
 ***
+
+# Data preparation
+
+***
+
+## Load the data
+
+Next, we'll load our data. For this first tutorial, we'll use a toy dataset
+that's already included in R: `USArrests`. It includes arrest statistics for
+U.S. states from 1973. This is a relatively simple naturally occurring dataset,
+but it's fairly easy to work with because it's already in R.
+
+```{r load-data}
+
+# read in the dataset
+arrest_df = USArrests
+
+```
+
+We gave our variable an informative name---here, `arrest_df`. A common
+convention is to use `df` as an abbreviation for "dataframe," or a collection of
+variables. It's good to get in the habit of giving your variables and dataframes
+more informative names than a single letter (e.g., `x`, `a`) or generic names
+(e.g., `dataframe`) so that you can remember what you're handling at any moment.
+
+(And don't forget: Future You will thank Past You when you've made easily
+understandable variable names, too, rather than cursing Past You for making
+Future You go through all of the code to figure out what `this_variable` is
+doing and why.)
+
