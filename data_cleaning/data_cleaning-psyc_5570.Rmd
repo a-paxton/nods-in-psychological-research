@@ -204,3 +204,85 @@ Together, this example shows the utility of combining the Tidyverse with other
 functions: As with any toolbox, you want to find the perfect tool for a specific
 job---not just treat everything as a `tidy` hammer or a base screwdriver.
 
+## Handling missing values
+
+Next, we'll want to check for missing values. There isn't a clean way of grabbing
+only rows with missing data with the Tidyverse, so instead, we'll take a two-step
+approach by creating a new dataframe without any missing variables (`drop_na()`)
+and then doing an anti-join (`anti_join()`) between the two dataframes.
+
+```{r check-for-missing}
+
+# drop any missing values
+full_starwars_df = starwars_df %>%
+  drop_na()
+
+# let's take a look at what we have missing
+missing_starwars_df = starwars_df %>%
+  anti_join(., full_starwars_df)
+head(missing_starwars_df)
+
+```
+
+(As a quick side note before we get started: You'll see a long list of specific
+variables output above, which is how `tidyverse` tells you what variables it
+identified as repeating across the two datasets. You can manually specify these
+variables if you'd like---which is the safer route---or can allow it to do it
+automagically.)
+
+Well, it looks like we've got a whole lot of data considered missing here. If
+someone hasn't piloted a vehicle or a starship, for example, they come up as an
+`NA`. In our case, we don't want that to show up as missing: We need to have
+this coded so that we can differentiate between pilots and non-pilots. We can
+do this by using the `mutate()` function, which alters variables.
+
+```{r create-new-pilot-variable}
+
+# let's create new pilot dummy variables
+starwars_df = starwars_df %>%
+  
+  # rowwise functions can be tricky sometimes;
+  # just try it with the next call silenced
+  rowwise() %>%
+  
+  # let's make one for vehicles
+  mutate(dummy_vehicle_pilot = ifelse(is_empty(vehicles),
+                                      0,
+                                      1)) %>%
+  
+  # and then one for starships
+  mutate(dummy_starship_pilot = ifelse(is_empty(starships),
+                                      0,
+                                      1)) %>%
+  
+  # and then one for any pilot
+  mutate(pilot = ifelse((dummy_vehicle_pilot + dummy_starship_pilot)>=1,
+                        1,
+                        0))
+
+# let's see what we get
+head(starwars_df)
+
+```
+
+Great! Our data are shaping up nicely for us. Let's keep moving. Next, we'll need
+to remove anyone who wasn't in a *Star Wars* film, given our interests.
+
+```{r remove-missing}
+
+# grab anyone with full data
+full_starwars_df = starwars_df %>%
+  drop_na(films)
+
+# identify anyone with missing data
+missing_starwars_df = starwars_df %>%
+  anti_join(., full_starwars_df)
+
+# now, let's see how many we have in each
+print(paste0("Full records: ",dim(full_starwars_df)[1]))
+print(paste0("Missing records: ",dim(missing_starwars_df)[1]))
+
+```
+
+***
+
