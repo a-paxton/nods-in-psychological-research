@@ -105,3 +105,39 @@ understandable variable names, too, rather than cursing Past You for making
 Future You go through all of the code to figure out what `this_variable` is
 doing and why.)
 
+## Visual inspection
+
+A good first step is to check out your dataset after you load it. You can use
+the `head()` function to just look at the first 6 records (or however many you'd
+like to specify manually).
+
+```{r head-function}
+
+# inspect the first 5 records
+head(arrest_df)
+
+```
+
+You can also choose to inspect the data manually using RStudio's data viewer.
+You can use the `View()` function to call it programmatically, although you'll
+note that nothing will pop up when we knit such a command.
+
+```{r view-function}
+
+# programmatically call the data viewer
+View(arrest_df)
+
+```
+
+## Summary statistics
+
+After our visual inspection, we might want to get a better feel for the
+distributions of our data. We can use the `summary()` basic R commands to
+understand all of our variables at a glance.
+
+```{r create-summary}
+
+# print summary statistics for all of our variables at once
+summary(arrest_df)
+
+```
