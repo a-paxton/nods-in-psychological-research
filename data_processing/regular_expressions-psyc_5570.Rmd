@@ -64,10 +64,55 @@ load_or_install_packages <- function(pkg){
 
 # specify which packages we'll need
 required_packages = c("tidyverse",
-                      "stringr")
+                      "stringr",
+                      "readr")
 
 # install them (if necessary) and load them
 load_or_install_packages(required_packages)
 
 ```
 
+***
+
+# Data preparation
+
+***
+
+## Load the data
+
+Next, we'll load our data. We'll do this by first loading in our ProPublica
+Congressional API key.
+
+```{r load-key}
+
+# read in the API key
+propublica_key = read_file("../propublica_key.txt")
+
+```
+
+In your console (or by adding a new chunk in your R markdown), take a look at
+your API key. You should see the long alphanumeric string that you received from
+ProPublica---but you may also have two new characters at the end: `\n`. That's
+an invisible character that indicates a new line. As our first regular expression,
+let's go ahead and remove it.
+
+We'll do this by using `stringr::str_remove()`, a function that will remove any
+substring that matches our predefined pattern from the longer string. In our
+case, our `string` is `propublica_key`, and our `pattern` is our newline
+character, `\n`.
+
+```{r remove-newline}
+
+# remove the newline from the API key
+propublica_key = str_remove(propublica_key, "\n")
+
+```
+
+Take a look at your key again in your console. If you had the `\n` in your key
+initially, you should see that it's now gone. Congrats! You just used your first
+(maybe) regular expression.
+
+One important lesson that this teaches us is that regex doesn't just deal with
+the characters that we can see when we open a text file. It's much more powerful
+than that: It can handle invisible characters that specify things behind the
+scenes, from newlines to the beginning or end of a string.
