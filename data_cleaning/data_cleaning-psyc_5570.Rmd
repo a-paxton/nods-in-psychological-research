@@ -290,7 +290,7 @@ Here, we'll need to figure out how to identify the number of movies from the
 embedded list in the `films` variable. Find a way of extracting this as an
 integer to be included as a new variable, `film_count`.
 
-```{r transform-movie-counts}
+```{r transform-movie-counts, eval=FALSE}
 
 full_starwars_df = full_starwars_df %>%
   mutate(film_count = ...)
@@ -336,7 +336,7 @@ we are asking to convert each variable that is a numeric-type variable.
 Always, always, always plot your data. Here, come up with 1-2 visualizations of
 the data, focusing on the most relevant variables to our analyses
 
-```{r plot, fig.height=5, fig.width=3}
+```{r plot, fig.height=5, fig.width=3, eval=FALSE}
 
 plot(...)
 
@@ -350,3 +350,8 @@ Now, try your hand at using the Star Wars API to download the planets or
 vehicles dataframe and join them together with the characters dataset that we've
 been using. Try joining them together and structuring a dataset that could
 answer a new question.
+
+```{r join-dataframes}
+
+```
+
