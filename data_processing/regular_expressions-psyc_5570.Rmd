@@ -10,13 +10,20 @@ output:
 and manipulation of substrings within strings. They are incredibly useful tools
 for reproducibly working with well-defined units at scale. In other words, if
 you want to identify and remove any pesky HTML tags that snuck into your scraped
-dataset, you could scroll through a .txt or .csv file in a text editor and then
+dataset, you could scroll through a `.txt` or `.csv` file in a text editor and then
 manually delete them, but that would take a *very* long time and could result in
 human error. (And what would happen if you wanted to expand your dataset or if
 your dataset needed to be re-scraped? Despair!)
 
-In this tutorial, we will be using the `stringr` library in R to walk through
-regular expressions. 
+In this tutorial, we will be using the `stringr` library in R to learn some
+regular expressions using [ProPublica's Congress
+API](https://projects.propublica.org/api-docs/congress-api/). You can request an
+API key from their [Data
+Store](https://www.propublica.org/datastore/apirequest). Assuming your file
+structure mirrors the file structure of this repository, you should save the API
+key as a single line in a text file named `propublica_key.txt` in the
+`nods-in-psychological-research` directory (one level above the one in which
+this `.Rmd` is saved).
 
 ***
 
