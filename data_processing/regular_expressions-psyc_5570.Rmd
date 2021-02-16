@@ -25,6 +25,10 @@ key as a single line in a text file named `propublica_key.txt` in the
 `nods-in-psychological-research` directory (one level above the one in which
 this `.Rmd` is saved). We will use the `ProPublicaR` library to grab the data.
 
+Part of the ProPublica API's terms of service include that the data won't be
+shared, so I will not be showing raw output in chunks. You can change the chunks
+to remove `results="hide"` from the options when you run the code locally.
+
 ***
 
 # Preliminaries
