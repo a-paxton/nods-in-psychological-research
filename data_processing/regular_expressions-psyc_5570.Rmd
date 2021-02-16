@@ -16,14 +16,14 @@ human error. (And what would happen if you wanted to expand your dataset or if
 your dataset needed to be re-scraped? Despair!)
 
 In this tutorial, we will be using the `stringr` library in R to learn some
-regular expressions using [ProPublica's Congress
+regular expressions using data from [ProPublica's Congress
 API](https://projects.propublica.org/api-docs/congress-api/). You can request an
 API key from their [Data
 Store](https://www.propublica.org/datastore/apirequest). Assuming your file
 structure mirrors the file structure of this repository, you should save the API
 key as a single line in a text file named `propublica_key.txt` in the
 `nods-in-psychological-research` directory (one level above the one in which
-this `.Rmd` is saved).
+this `.Rmd` is saved). We will use the `ProPublicaR` library to grab the data.
 
 ***
 
@@ -65,7 +65,9 @@ load_or_install_packages <- function(pkg){
 # specify which packages we'll need
 required_packages = c("tidyverse",
                       "stringr",
-                      "readr")
+                      "readr",
+                      "data.table",
+                      "ProPublicaR")
 
 # install them (if necessary) and load them
 load_or_install_packages(required_packages)
@@ -78,10 +80,10 @@ load_or_install_packages(required_packages)
 
 ***
 
-## Load the data
+## Specify our API key
 
-Next, we'll load our data. We'll do this by first loading in our ProPublica
-Congressional API key.
+In order to use the `ProPublicaR` package to access the data, we need to loading
+in our ProPublica Congressional API key.
 
 ```{r load-key}
 
@@ -116,3 +118,18 @@ One important lesson that this teaches us is that regex doesn't just deal with
 the characters that we can see when we open a text file. It's much more powerful
 than that: It can handle invisible characters that specify things behind the
 scenes, from newlines to the beginning or end of a string.
+
+## Load the data
+
+```{r load-recent-statements}
+
+# get the most recent Congressional statements
+recent_statements = get_recent_congressional_statements(page = 1, 
+                                                        propublica_key)
+
+# convert to dataframe
+recent_statements_df = rbindlist(recent_statements$results,
+                                 fill = TRUE)
+
+```
+
