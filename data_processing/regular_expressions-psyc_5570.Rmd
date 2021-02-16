@@ -215,3 +215,44 @@ recent_statements_df$title_mentions_congress
 
 Much better!
 
+## Swapping substrings
+
+Let's try swapping substrings now. Let's say that we regret our decision to
+convert everything to lowercase and want "Congress" to be capitalized. We can do
+that with `stringr::str_replace_all()`. Our `string` is our new lowercase title
+variable, `recent_statements_df$title_lower`, our `pattern` is `congress`, and
+our `replacement` is `Congress`.
+
+```{r swap-out-congress}
+
+# re-capitalize Congress
+recent_statements_df$title_capital_congress = str_replace_all(
+  string = recent_statements_df$title_lower,
+  pattern = "congress",
+  replacement = "Congress"
+)
+
+```
+
+Now, let's see if it worked. We can do this by counting the number of times that
+`congress` and `Congress` appeared in our transformed title variable.
+
+```{r check-swap-efficacy}
+
+# and let's see whether it worked: how many "congress" appearances?
+sum(
+  str_count(
+  string=recent_statements_df$title_capital_congress,
+  pattern="congress")
+)
+
+# and let's see whether it worked: how many "Congress" appearances?
+sum(
+  str_count(
+  string=recent_statements_df$title_capital_congress,
+  pattern="Congress")
+)
+
+```
+
+It worked!
