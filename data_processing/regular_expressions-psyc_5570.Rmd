@@ -259,4 +259,17 @@ sum(
 
 ```
 
-It worked!
+It worked! 
+
+***
+
+# Exercise
+
+***
+
+Now, using the cheat sheets and above examples, try the following:
+1. Create a new variable that removes all numbers from all titles in `title`
+2. Create a new variable that changes "Rep." to "Representative" in `title`
+3. Create a new variable that includes the value of `statement_type` in
+    capital letters, followed by `: ` (colon space), followed by the `title` 
+    values in title case (i.e., capitalize only first letter of each word)
