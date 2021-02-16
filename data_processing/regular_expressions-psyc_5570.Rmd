@@ -1,0 +1,66 @@
+---
+title: "Introduction to Regular Expressions in R"
+author: "A. Paxton (*University of Connecticut*)"
+output:
+  html_document:
+    keep_md: yes
+---
+
+*Regular expressions* (or *regex*) are sequences that permit pattern matching
+and manipulation of substrings within strings. They are incredibly useful tools
+for reproducibly working with well-defined units at scale. In other words, if
+you want to identify and remove any pesky HTML tags that snuck into your scraped
+dataset, you could scroll through a .txt or .csv file in a text editor and then
+manually delete them, but that would take a *very* long time and could result in
+human error. (And what would happen if you wanted to expand your dataset or if
+your dataset needed to be re-scraped? Despair!)
+
+In this tutorial, we will be using the `stringr` library in R to walk through
+regular expressions. 
+
+***
+
+# Preliminaries
+
+First, let's get ready for our analyses. We do this by clearing our workspace
+and loading in the libraries we'll need. It's good to get in the habit of 
+clearing your workspace from the start so that you don't accidentally have
+clashes with unneeded variables or dataframes that could affect your results.
+
+As with our other tutorials, we'll use a function here to check for all required
+packages and---if necessary---install them before loading them. Implementing
+this (or a similar) function is a helpful first step, especially if you plan on
+sharing your code with other people.
+
+```{r clear-workspace}
+
+# clear the workspace (useful if we're not knitting)
+rm(list=ls())
+
+```
+
+```{r function-check-for-packages, include=FALSE}
+
+# make sure we can load packages 
+# (thanks to https://gist.github.com/smithdanielle/9913897)
+load_or_install_packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, 
+                     dependencies = TRUE,
+                     repos="http://cloud.r-project.org/")
+  sapply(pkg, require, character.only = TRUE)
+}
+```
+
+```{r load-packages, message=FALSE, results="hide"}
+
+# specify which packages we'll need
+required_packages = c("tidyverse",
+                      "stringr")
+
+# install them (if necessary) and load them
+load_or_install_packages(required_packages)
+
+```
+
