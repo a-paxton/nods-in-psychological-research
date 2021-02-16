@@ -168,7 +168,7 @@ statements with a title that includes the word "Congress" in it. We'll use the
 input vector's items include our target pattern. In this case, our `string` is
 `recent_statements_df$title`, and our pattern is `Congress`.
 
-```{r identify-datasets-with-congress}
+```{r identify-titles-with-congress}
 
 # create a new column that specifies whether the statement title mentions Congress
 recent_statements_df$title_mentions_congress = str_detect(
@@ -182,3 +182,36 @@ recent_statements_df$title_mentions_congress
 
 We could, if we wanted, then use this vector to analyze differences between,
 say, statements that mention Congress by name and those that don't.
+
+But, hmm... that doesn't look right. There should be more than this. Let's
+look at the raw titles.
+
+```{r show-titles, results = "hide"}
+
+# let's look at the raw titles
+recent_statements_df$title
+
+```
+Ah, it seems like there's a problem with capitalization. Let's handle the
+capitalization issue and then try to identify them again. We can do this all at
+once with `stringr::str_to_lower()`. But remember, we'll *also* have to change
+the `pattern` to be lowercase, or we won't be able to find the `Congress`
+substring within our text.
+
+```{r lowercase-titles-then-identify-congress}
+
+# create a new variable that converts the title to lowercase
+recent_statements_df$title_lower = str_to_lower(recent_statements_df$title)
+
+# revise the Congress identification column
+recent_statements_df$title_mentions_congress = str_detect(
+  string=recent_statements_df$title_lower,
+  pattern="congress")
+
+# let's check out our new results
+recent_statements_df$title_mentions_congress
+
+```
+
+Much better!
+
