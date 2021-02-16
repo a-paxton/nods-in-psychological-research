@@ -125,6 +125,10 @@ scenes, from newlines to the beginning or end of a string.
 
 ## Load the data
 
+Now that we've got our API key working, let's plug it into the
+`get_recent_congressional_statements()` function to grab the 20 most recent
+statements from U.S. Congressmembers.
+
 ```{r load-recent-statements}
 
 # get the most recent Congressional statements
