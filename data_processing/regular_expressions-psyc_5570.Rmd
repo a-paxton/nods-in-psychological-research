@@ -29,6 +29,10 @@ Part of the ProPublica API's terms of service include that the data won't be
 shared, so I will not be showing raw output in chunks. You can change the chunks
 to remove `results="hide"` from the options when you run the code locally.
 
+To help with this tutorial, check out these wonderful cheat sheets:
+* For `stringr`: https://evoldyn.gitlab.io/evomics-2018/ref-sheets/R_strings.pdf
+* For base R: https://rstudio.com/wp-content/uploads/2016/09/RegExCheatsheet.pdf
+
 ***
 
 # Preliminaries
