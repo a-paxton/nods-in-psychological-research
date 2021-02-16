@@ -133,3 +133,44 @@ recent_statements_df = rbindlist(recent_statements$results,
 
 ```
 
+***
+
+# Data processing
+
+***
+
+Now, let's play around with some regular expressions. First, let's have a look
+at our data. (Because---remember---we always, always, always look at our data.)
+
+```{r examine-data, results="hide"}
+
+# let's take a peek
+head(recent_statements_df)
+
+```
+
+Okay, so we've got a variety of different kinds of data here. Great for
+practicing!
+
+## Identifying substrings
+
+First, let's work to identify a substring. Let's say we want to find all
+statements with a title that includes the word "Congress" in it. We'll use the
+`stringr::str_detect()` function to produce a logical vector of whether our
+input vector's items include our target pattern. In this case, our `string` is
+`recent_statements_df$title`, and our pattern is `Congress`.
+
+```{r identify-datasets-with-congress}
+
+# create a new column that specifies whether the statement title mentions Congress
+recent_statements_df$title_mentions_congress = str_detect(
+  string=recent_statements_df$title,
+  pattern="Congress")
+
+# let's see what we got
+recent_statements_df$title_mentions_congress
+
+```
+
+We could, if we wanted, then use this vector to analyze differences between,
+say, statements that mention Congress by name and those that don't.
