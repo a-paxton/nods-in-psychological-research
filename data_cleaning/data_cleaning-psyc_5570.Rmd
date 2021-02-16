@@ -117,7 +117,7 @@ like to specify manually).
 
 ```{r head-function}
 
-# inspect the first 5 records
+# inspect the first 6 records
 head(starwars_df)
 
 ```
