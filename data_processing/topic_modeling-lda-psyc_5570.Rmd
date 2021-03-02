@@ -1,0 +1,312 @@
+---
+title: "Introduction to Topic Modeling in R"
+author: "A. Paxton (*University of Connecticut*)"
+output:
+  html_document:
+    keep_md: yes
+---
+
+*Topic modeling* is a way of automatically identifying underlying clusters of
+concepts in a text by looking to co-occurrence of words across documents. Topic
+modeling can be either deterministic (like latent semantic analysis, LSA) or
+probabilistic (like latent Dirichlet allocation, LDA). In this tutorial, we will
+be largely focusing on the probabilistic case.
+
+An this tutorial, we will be using the `topicmodels` library in R. It comes with
+a pre-processed dataset in the form of a `DocumentTermMatrix`, called
+`AssociatedPress`. This term-document matrix was created from a dataset of
+nearly 2250 Associated Press articles from the late 1980s and early 1990s,
+initially assembled as part of the first Text REtrieval Conference (TREC-1) in
+1992. Prior to being transformed into a `DocumentTermMatrix` object, the folks
+processing the data removed stopwords, low-frequency words, and short documents.
+
+My thanks and acknowledgements go to the excellent online book, *Text mining
+with R* (Silge & Robinson, 2020), on which this tutorial was heavily based.
+
+***
+
+# Preliminaries
+
+First, let's get ready for our analyses. We do this by clearing our workspace
+and loading in the libraries we'll need. It's good to get in the habit of 
+clearing your workspace from the start so that you don't accidentally have
+clashes with unneeded variables or dataframes that could affect your results.
+
+As with our other tutorials, we'll use a function here to check for all required
+packages and---if necessary---install them before loading them. Implementing
+this (or a similar) function is a helpful first step, especially if you plan on
+sharing your code with other people.
+
+```{r clear-workspace}
+
+# clear the workspace (useful if we're not knitting)
+rm(list=ls())
+
+# turn on caching
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.lazy=FALSE)
+
+# set seed for reproducibility
+set.seed(001)
+
+```
+
+```{r function-check-for-packages, include=FALSE}
+
+# make sure we can load packages 
+# (thanks to https://gist.github.com/smithdanielle/9913897)
+load_or_install_packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, 
+                     dependencies = TRUE,
+                     repos="http://cloud.r-project.org/")
+  sapply(pkg, require, character.only = TRUE)
+}
+```
+
+```{r load-packages, message=FALSE, results="hide"}
+
+# specify which packages we'll need
+required_packages = c("tidyverse",
+                      "stringr",
+                      "topicmodels",
+                      "gutenbergr",
+                      "tidytext",
+                      "SnowballC")
+
+# install them (if necessary) and load them
+load_or_install_packages(required_packages)
+
+```
+
+***
+
+# Data preparation
+
+***
+
+## Load the data
+
+Our data preparation should be fairly simple, given that we're using a premade
+corpus in the analysis. We'll load in the `AssociatedPress` document-term matrix.
+
+```{r grab-ap-matrix}
+
+# load in the `AssociatedPress` dataset
+data("AssociatedPress")
+
+# let's take a peek at what we get
+AssociatedPress
+
+```
+
+It looks like we have a very sparse matrix, which means that we have a lot of
+`0` values. In our case, that means we have a lot of words that don't appear
+in many documents.
+
+We also see that the weighting is just `term frequency` (`tf`), rather than
+`term frequency-inverse document frequency` (`tf-idf`). This means that we
+aren't weighting by how unique the words are across documents---just how many
+times the term is used across the entire corpus. This is important, because
+you need to use the *raw* term frequency matrix (not a weighted one) to do
+LDA.
+
+## Inspect the data
+
+Let's take a look at our data.
+
+```{r}
+
+# what terms do we have?
+AssociatedPress$dimnames$Terms[1:100]
+
+```
+
+Lots of words! What do you notice about them? What choices did the creators make
+in cleaning the data?
+
+## Run LDA with 2 topics
+
+Now, we need to set the number of topics that we assume are in our data. Let's
+start with 2. It's low, yes, but we can change it later.
+
+```{r create-lda-2-topics}
+
+# implement LDA
+ap_lda = LDA(AssociatedPress, 
+              k = 2, control = list(seed = 001))
+
+# give us the output
+ap_lda
+
+```
+
+Success! (And in just one line of code.) The output won't show us our topics,
+but we can create a cleaner version of the output with `tidytext`.
+
+```{r neater-lda-ouptut}
+
+# let's convert it to a neater table
+ap_lda_output = tidy(ap_lda, matrix = "beta")
+
+# let's look at the first few items
+head(ap_lda_output)
+
+```
+
+You see that each line gives a word and its strength associated with each term.
+In other words, how probable is it that one word is associated with Topic 1
+versus Topic 2?
+
+## Examining topics
+
+You might be interested in hearing about which words are most strongly connected
+to each topic. 
+
+```{r top-ten-both}
+
+# grab top 10 terms associated with each topic
+ap_top_10_terms = ap_lda_output %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+```
+
+```{r topic-1-top-10, echo=FALSE}
+
+# for Topic 1
+ap_top_10_terms %>%
+  dplyr::filter(topic==1)
+
+```
+
+```{r topic-2-top-10, echo=FALSE}
+
+# for Topic 2
+ap_top_10_terms %>%
+  dplyr::filter(topic==2)
+
+```
+
+## Changing model results
+
+But do we really think that there are just 2 topics in the entire dataset?
+Probably not. Let's try with a higher number of topics.
+
+```{r create-lda-10-topics}
+
+# implement LDA
+ap_lda_10 = LDA(AssociatedPress, 
+              k = 10, control = list(seed = 001))
+
+# give us the output
+ap_lda_10
+
+```
+
+You may have noticed that this one took a bit longer to run than the 2-topic
+case. Remember that this is a probabilistic analysis, so it will be more time-
+and resource-intensive to run as you increase!
+
+```{r neater-lda-10-ouptut}
+
+# let's convert it to a neater table
+ap_lda_10_output = tidy(ap_lda_10, matrix = "beta")
+
+# grab top 10 terms associated with each topic
+ap_lda_10_top_10_terms = ap_lda_10_output %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+```
+
+So, we've run our 2-topic model and our 10-topic model. Do we see the same kinds
+of clusters emerge across the two?
+
+```{r lda-10-topic-1-top-10, echo=FALSE}
+
+# for Topic 1
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==1)
+
+```
+
+```{r lda-10-topic-2-top-10, echo=FALSE}
+
+# for Topic 2
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==2)
+
+```
+
+```{r lda-10-topic-3-top-10, echo=FALSE}
+
+# for Topic 3
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==3)
+
+```
+
+```{r lda-10-topic-4-top-10, echo=FALSE}
+
+# for Topic 4
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==4)
+
+```
+
+```{r lda-10-topic-5-top-10, echo=FALSE}
+
+# for Topic 5
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==5)
+
+```
+
+```{r lda-10-topic-6-top-10, echo=FALSE}
+
+# for Topic 6
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==6)
+
+```
+
+```{r lda-10-topic-7-top-10, echo=FALSE}
+
+# for Topic 7
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==7)
+
+```
+
+```{r lda-10-topic-8-top-10, echo=FALSE}
+
+# for Topic 8
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==8)
+
+```
+
+```{r lda-10-topic-9-top-10, echo=FALSE}
+
+# for Topic 9
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==9)
+
+```
+
+```{r lda-10-topic-10-top-10, echo=FALSE}
+
+# for Topic 10
+ap_lda_10_top_10_terms %>%
+  dplyr::filter(topic==10)
+
+```
+
+Compare the results between the two-topic model and the ten-topic model. What
+consistencies or inconsistencies do you see? Assess how this exemplifies (or
+not!) the probablistic nature of LDA.
