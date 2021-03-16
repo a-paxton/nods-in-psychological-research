@@ -230,10 +230,10 @@ not, how would you handle this?
 
 # Conduct PCA
 
-Generally speaking, a covariance matrix is preferred to the correlation
-matrix. The covariance matrix requires all variables to be on the same scale,
-but we don't have that by default in this dataset. Luckily, `prcomp` handles
-this for us.
+Generally speaking, a correlation matrix is preferred to the covariance
+matrix. The correlation matrix requires all variables to be on the same scale,
+but we don't have that by default in this dataset. Luckily, `prcomp()` handles
+this for us with the `center` and `scale.` options.
 
 ```{r run-pca}
 
@@ -243,7 +243,7 @@ movie_genres = movies_df$genre
 # conduct PCA
 movies_pca = prcomp(select(movies_df,
                            -genre), 
-                    center = TRUE, scale = TRUE)
+                    center = TRUE, scale. = TRUE)
 
 # see what we get
 summary(movies_pca)

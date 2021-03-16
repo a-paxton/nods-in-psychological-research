@@ -263,10 +263,10 @@ not, how would you handle this?
 
 # Conduct PCA
 
-Generally speaking, a covariance matrix is preferred to the correlation
-matrix. The covariance matrix requires all variables to be on the same scale,
-but we don't have that by default in this dataset. Luckily, `prcomp` handles
-this for us.
+Generally speaking, a correlation matrix is preferred to the covariance
+matrix. The correlation matrix requires all variables to be on the same scale,
+but we don't have that by default in this dataset. Luckily, `prcomp()` handles
+this for us with the `center` and `scale.` options.
 
 
 ```r
@@ -276,7 +276,7 @@ movie_genres = movies_df$genre
 # conduct PCA
 movies_pca = prcomp(select(movies_df,
                            -genre), 
-                    center = TRUE, scale = TRUE)
+                    center = TRUE, scale. = TRUE)
 
 # see what we get
 summary(movies_pca)
@@ -309,8 +309,8 @@ component will "soak up" less and less variance.
 component_plot = ggbiplot(movies_pca, obs.scale = 1, var.scale = 1,
                           groups = movie_genres, ellipse = TRUE, circle = TRUE,
                           alpha=.2) +
-  # scale_colour_manual(name = 'Genre',
-  #                     values=inauguration_palettes$inauguration_2021_bernie) +
+  scale_colour_manual(name = 'Genre',
+                      values=inauguration_palettes$inauguration_2021_bernie) +
   theme(legend.direction = 'horizontal', legend.position = 'top')
 
 # reorder layers so that the arrows are on top
