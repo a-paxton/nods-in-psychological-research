@@ -1,0 +1,276 @@
+---
+title: "Introduction to Dimensionality Reduction in R"
+author: "A. Paxton (*University of Connecticut*)"
+output:
+  html_document:
+    keep_md: yes
+---
+
+*Dimensionality reduction* is a way that we can make sense of high-dimensional
+data. With dimensionality reduction, we're taking multivariate data that live in
+a higher-dimensional space and transforming it into a lower-dimensional
+representation. From there, we can use the lower-dimensional representation to
+visualize or analyze our data.
+
+In this tutorial, we will be focusing on *principal components analysis* (PCA).
+PCA is a linear dimensionality reduction method that focuses on retaining the
+maximal amount of variance from the original data in the new (lower-dimensional)
+data. PCA decomposes the original data's variance into a series of orthogonal
+dimensions (or *principal components*), with each subsequent dimension
+explaining less variance in the data.
+
+An this tutorial, we will be using base R to conduct PCA. As a sample dataset,
+we'll be using the `movies` dataset from the `ggplot2movies` library.
+
+My thanks go to [Luke Hayden's "Principal Components Analysis in R"
+tutorial](https://www.datacamp.com/community/tutorials/pca-analysis-r), from
+which I learned about the `ggbiplot` library.
+
+***
+
+# Preliminaries
+
+First, let's get ready for our analyses. We do this by clearing our workspace
+and loading in the libraries we'll need. It's good to get in the habit of 
+clearing your workspace from the start so that you don't accidentally have
+clashes with unneeded variables or dataframes that could affect your results.
+
+As with our other tutorials, we'll use a function here to check for all required
+packages and---if necessary---install them before loading them. Implementing
+this (or a similar) function is a helpful first step, especially if you plan on
+sharing your code with other people.
+
+```{r clear-workspace}
+
+# clear the workspace (useful if we're not knitting)
+rm(list=ls())
+
+# turn on caching
+knitr::opts_chunk$set(cache=TRUE, autodep=TRUE, cache.lazy=FALSE)
+
+# set seed for reproducibility
+set.seed(001)
+
+```
+
+```{r function-check-for-packages, include=FALSE}
+
+# make sure we can load packages 
+# (thanks to https://gist.github.com/smithdanielle/9913897)
+load_or_install_packages <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, 
+                     dependencies = TRUE,
+                     repos="http://cloud.r-project.org/")
+  sapply(pkg, require, character.only = TRUE)
+}
+```
+
+```{r load-packages, message=FALSE, results="hide"}
+
+# specify which packages we'll need
+required_packages = c("tidyverse",
+                      "stringr",
+                      "ggplot2",
+                      "ggplot2movies",
+                      "PerformanceAnalytics",
+                      "Hmisc",
+                      "devtools")
+
+# install them (if necessary) and load them
+load_or_install_packages(required_packages)
+
+# install from GitHub
+if (length("ggbiplot")) { install_github("vqv/ggbiplot") }
+if(length("inauguration")) { install_github("ciannabp/inauguration", ref="main") }
+library(ggbiplot)
+library(inauguration)
+
+```
+
+***
+
+# Data preparation
+
+***
+
+## Load the data
+
+```{r grab-data}
+
+# let's take a peek at what we get
+head(movies)
+
+```
+
+## Create a new variable for genre
+
+The `movies` dataset allows for a given movie to include multiple genres, but
+for our example, we want to create a genre variable that's mutually exclusive.
+Here, we'll use the given genre label if there is only one listed and will
+randomly select one genre label if there are multiple listed.
+
+```{r create-genre-variable}
+
+movies_df = movies %>%
+  
+  # use `gather()` to figure out the genre identifications for each
+  gather(., genre, present, 
+         Action,Animation,Comedy,Drama,Documentary,Romance,Short) %>%
+  
+  # remove lines for which a given genre isn't present
+  dplyr::filter(present!=0) %>%
+  
+  # keep only one (randomly chosen) genre for each 
+  # (since they're alphabetically ordered)
+  dplyr::group_by(title) %>%
+  sample_n(1) %>%
+  ungroup() %>%
+  
+  # drop `present` variable
+  dplyr::select(-present) %>%
+  
+  # convert to factor
+  mutate(genre = as.factor(genre))
+
+```
+
+## Identify variables for reduction
+
+We've got plenty of data, but with PCA, we know that we need to use continuous
+or ordinal variables. Let's grab only the variables that have those properties.
+Let's also go ahead and eliminate observations with missing data, too, while
+we're at it. We'll also include `genre`, which we'll use for visualization
+purposes later.
+
+```{r select-appropriate-variables}
+
+movies_df = movies_df %>% ungroup() %>%
+
+  # select only numeric variables
+  dplyr::select(genre, 
+                where(is.numeric)) %>%
+  
+  # remove rows with missing values
+  drop_na() 
+
+```
+
+Let's see how our data look.
+
+```{r print-data-summary}
+
+# use the built-in summary option
+summary(movies_df)
+
+```
+Based on what we know about movies, it looks like some of our data may be
+suspect: Some movies have a `budget` value of `0`. Unless we know that these
+are entirely volunteer efforts (which, at this point, we don't), let's go
+ahead and remove them, assuming that the data may be incorrect.
+
+```{r remove-zero-budget-films}
+
+# remove films with $0 budgets
+movies_df = movies_df %>%
+  dplyr::filter(budget > 0)
+
+```
+
+Now, let's take a look at the properties of our variables. Remember, we want to
+make sure that our data are normally distributed and are linearly related to one
+another.
+
+```{r corr-results, fig.height=8, fig.width=8}
+
+# give us a fabulous table (minus the `genre` variable)
+chart.Correlation(select(movies_df,
+                         -genre), 
+                  histogram=TRUE, pch=19)
+
+```
+
+PCA is robust to some non-normality, but we need to be cautious. It looks like
+we've got a few variables that should be transformed. There are different ways
+that we can transform our variables: taking the square root (`sqrt()`), taking
+the square (`^2`), and taking the natural logarithm (`log()`).
+
+```{r transform-variables, fig.height=8, fig.width=8}
+
+# transform our variables
+movies_df = movies_df %>%
+  
+  # take the log of some variables
+  mutate(budget = log(budget),
+         votes = log(votes)) %>%
+  
+  # take the square root of other variables
+  mutate_at(vars(r1,r2,r3,r4,r5,r6,r7,r8,r9,r10),
+            list(sqrt))
+
+# then let's see those lovely tables again
+chart.Correlation(select(movies_df,
+                         -genre), 
+                  histogram=TRUE, pch=19)
+
+```
+
+The visualization is all well and good, but in a real dataset, we'd want
+to test for normality statisically.
+
+**Try this on your own**. Use the `shapiro.test()` function to test for
+normality. If you find that the variables are not close to being normally
+distributed after you transform them, you need to think carefully about what
+this means.
+
+**Another point to consider**. Remember that PCA assumes that our variables are
+linearly related. Does that point hold in our current choice for a dataset? If
+not, how would you handle this?
+
+# Conduct PCA
+
+Generally speaking, a covariance matrix is preferred to the correlation
+matrix. The covariance matrix requires all variables to be on the same scale,
+but we don't have that by default in this dataset. Luckily, `prcomp` handles
+this for us.
+
+```{r run-pca}
+
+# separate out genres
+movie_genres = movies_df$genre
+
+# conduct PCA
+movies_pca = prcomp(select(movies_df,
+                           -genre), 
+                    center = TRUE, scale = TRUE)
+
+# see what we get
+summary(movies_pca)
+
+```
+We have 15 components in our dataset, one for every variable in our dataset.
+You'll also see how much independent variance each component is contributing
+(`Proportion of Variance`). Remember, the first principal component ("PC") is
+always going to "soak up" the most amount of variance, and each subsequent
+component will "soak up" less and less variance.
+
+```{r plot-components, fig.width=5, fig.height=5}
+
+# plot the components!
+component_plot = ggbiplot(movies_pca, obs.scale = 1, var.scale = 1,
+                          groups = movie_genres, ellipse = TRUE, circle = TRUE,
+                          alpha=.2) +
+  scale_colour_manual(name = 'Genre',
+                      values=inauguration_palettes$inauguration_2021_bernie) +
+  theme(legend.direction = 'horizontal', legend.position = 'top')
+
+# reorder layers so that the arrows are on top
+# (thanks to https://stackoverflow.com/a/34135575)
+component_plot$layers <- c(component_plot$layers, 
+                           component_plot$layers[[2]])
+
+# display plot
+component_plot
+
+```
